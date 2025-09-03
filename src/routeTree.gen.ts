@@ -9,16 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as HomeLayoutRouteRouteImport } from './routes/_HomeLayout/route'
+import { Route as HomeLayoutIndexRouteImport } from './routes/_HomeLayout/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
 import { Route as DemoStoreRouteImport } from './routes/demo.store'
+import { Route as HomeLayoutOrdersRouteImport } from './routes/_HomeLayout/orders'
+import { Route as HomeLayoutCartRouteImport } from './routes/_HomeLayout/cart'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo.form.simple'
 import { Route as DemoFormAddressRouteImport } from './routes/demo.form.address'
 
-const IndexRoute = IndexRouteImport.update({
+const HomeLayoutRouteRoute = HomeLayoutRouteRouteImport.update({
+  id: '/_HomeLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeLayoutIndexRoute = HomeLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => HomeLayoutRouteRoute,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
@@ -29,6 +36,16 @@ const DemoStoreRoute = DemoStoreRouteImport.update({
   id: '/demo/store',
   path: '/demo/store',
   getParentRoute: () => rootRouteImport,
+} as any)
+const HomeLayoutOrdersRoute = HomeLayoutOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => HomeLayoutRouteRoute,
+} as any)
+const HomeLayoutCartRoute = HomeLayoutCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => HomeLayoutRouteRoute,
 } as any)
 const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
   id: '/demo/form/simple',
@@ -42,53 +59,67 @@ const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/cart': typeof HomeLayoutCartRoute
+  '/orders': typeof HomeLayoutOrdersRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/': typeof HomeLayoutIndexRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/cart': typeof HomeLayoutCartRoute
+  '/orders': typeof HomeLayoutOrdersRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/': typeof HomeLayoutIndexRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_HomeLayout': typeof HomeLayoutRouteRouteWithChildren
+  '/_HomeLayout/cart': typeof HomeLayoutCartRoute
+  '/_HomeLayout/orders': typeof HomeLayoutOrdersRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/_HomeLayout/': typeof HomeLayoutIndexRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
+    | '/cart'
+    | '/orders'
     | '/demo/store'
     | '/demo/tanstack-query'
+    | '/'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/cart'
+    | '/orders'
     | '/demo/store'
     | '/demo/tanstack-query'
+    | '/'
     | '/demo/form/address'
     | '/demo/form/simple'
   id:
     | '__root__'
-    | '/'
+    | '/_HomeLayout'
+    | '/_HomeLayout/cart'
+    | '/_HomeLayout/orders'
     | '/demo/store'
     | '/demo/tanstack-query'
+    | '/_HomeLayout/'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  HomeLayoutRouteRoute: typeof HomeLayoutRouteRouteWithChildren
   DemoStoreRoute: typeof DemoStoreRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   DemoFormAddressRoute: typeof DemoFormAddressRoute
@@ -97,12 +128,19 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_HomeLayout': {
+      id: '/_HomeLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof HomeLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_HomeLayout/': {
+      id: '/_HomeLayout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof HomeLayoutIndexRouteImport
+      parentRoute: typeof HomeLayoutRouteRoute
     }
     '/demo/tanstack-query': {
       id: '/demo/tanstack-query'
@@ -117,6 +155,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/store'
       preLoaderRoute: typeof DemoStoreRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_HomeLayout/orders': {
+      id: '/_HomeLayout/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof HomeLayoutOrdersRouteImport
+      parentRoute: typeof HomeLayoutRouteRoute
+    }
+    '/_HomeLayout/cart': {
+      id: '/_HomeLayout/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof HomeLayoutCartRouteImport
+      parentRoute: typeof HomeLayoutRouteRoute
     }
     '/demo/form/simple': {
       id: '/demo/form/simple'
@@ -135,8 +187,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface HomeLayoutRouteRouteChildren {
+  HomeLayoutCartRoute: typeof HomeLayoutCartRoute
+  HomeLayoutOrdersRoute: typeof HomeLayoutOrdersRoute
+  HomeLayoutIndexRoute: typeof HomeLayoutIndexRoute
+}
+
+const HomeLayoutRouteRouteChildren: HomeLayoutRouteRouteChildren = {
+  HomeLayoutCartRoute: HomeLayoutCartRoute,
+  HomeLayoutOrdersRoute: HomeLayoutOrdersRoute,
+  HomeLayoutIndexRoute: HomeLayoutIndexRoute,
+}
+
+const HomeLayoutRouteRouteWithChildren = HomeLayoutRouteRoute._addFileChildren(
+  HomeLayoutRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  HomeLayoutRouteRoute: HomeLayoutRouteRouteWithChildren,
   DemoStoreRoute: DemoStoreRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   DemoFormAddressRoute: DemoFormAddressRoute,
